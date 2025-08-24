@@ -1,0 +1,57 @@
+{
+  "name": "autocommit-np",
+  "displayName": "AutoCommit by NP",
+  "description": "Generates Git commit messages using AI (Gemini)",
+  "version": "0.0.1",
+  "publisher": "nishant0121",
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:extension.generateCommitMessage"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.generateCommitMessage",
+        "title": "Generate Git Commit Message (Gemini)"
+      }
+    ],
+    "configuration": {
+      "title": "Commit Message Generator",
+      "properties": {
+        "commitMessageGenerator.apiKey": {
+          "type": "string",
+          "description": "Your Gemini API key for generating commit messages.",
+          "default": ""
+        }
+      }
+    }
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.100.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "eslint": "^9.23.0"
+  },
+  "dependencies": {
+    "axios": "^1.9.0",
+    "dotenv": "^16.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nishant0121/AutoCommit"
+  },
+  "homepage": "https://github.com/Nishant0121/AutoCommit"
+}
