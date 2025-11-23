@@ -7,7 +7,13 @@ function activate(context) {
     async function () {
       try {
         const gitDiff = await getGitDiff();
-        const message = await generateCommitMessage(gitDiff);
+        let message = await generateCommitMessage(gitDiff); // Changed 'const' to 'let'
+
+        console.log("Generated Commit Message before trim:", message);
+
+        message = message.replace(/^```(\w+)?\n?/g, "").replace(/```\n?$/g, "").trim();
+
+        console.log("Generated Commit Message:", message);
 
         await vscode.env.clipboard.writeText(message);
         vscode.window.showInformationMessage(
