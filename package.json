@@ -2,7 +2,7 @@
   "name": "autocommit-np",
   "displayName": "AutoCommit by NP",
   "description": "Generates Git commit messages using AI (Gemini)",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "nishant0121",
   "engines": {
     "vscode": "^1.100.0"
@@ -46,8 +46,10 @@
     "eslint": "^9.23.0"
   },
   "dependencies": {
+    "@vscode/vsce": "^3.6.0",
     "axios": "^1.9.0",
-    "dotenv": "^16.5.0"
+    "dotenv": "^16.5.0",
+    "vsce": "^2.15.0"
   },
   "repository": {
     "type": "git",
