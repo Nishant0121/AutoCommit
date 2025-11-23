@@ -1,6 +1,6 @@
 # AutoCommit Message Generator
 
-[utoCommit Logo](<AutoCommit Logo.png>)
+![AutoCommit Logo](https://res.cloudinary.com/dvmsssno2/image/upload/v1763905225/AutoCommit_Logo_ghvuj7.png)
 
 A VS Code extension that generates concise, intelligent git commit messages based on your staged or working file changes using Google's **Gemini 2.0 Flash** AI.
 
