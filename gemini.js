@@ -10,11 +10,6 @@ async function getApiKey() {
     .getConfiguration("commitMessageGenerator")
     .get("apiKey");
 
-  // 2. Try from environment variable
-  if (!apiKey) {
-    apiKey = process.env.GEMINI_API_KEY;
-  }
-
   // 3. If still missing → prompt user
   if (!apiKey) {
     const input = await vscode.window.showInputBox({
