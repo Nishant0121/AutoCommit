@@ -13,52 +13,96 @@ function activate(context) {
   let disposable = vscode.commands.registerCommand(
     "extension.generateCommitMessage",
     async function () {
+      let action = "Regenerate";
 
-      // Professional UI: Progress bar with generic "AI" text
-      await vscode.window.withProgress(
-        {
-          location: vscode.ProgressLocation.Notification,
-          title: "AutoCommit",
-          cancellable: false,
-        },
-        async (progress) => {
-          try {
-            // Step 1: Scan for changes
-            progress.report({ message: "Scanning workspace changes..." });
-            const gitDiff = await getGitDiff();
+      while (action === "Regenerate") {
+        let finalMessage = null;
+        let errorOccurred = false;
 
-            if (!gitDiff) {
-              vscode.window.showWarningMessage("No staged or unstaged changes detected.");
-              return;
-            }
+        // Professional UI: Progress bar with generic "AI" text
+        await vscode.window.withProgress(
+          {
+            location: vscode.ProgressLocation.Notification,
+            title: "AutoCommit",
+            cancellable: false,
+          },
+          async (progress) => {
+            try {
+              // Step 1: Scan for changes
+              progress.report({ message: "Scanning workspace changes..." });
+              const gitDiff = await getGitDiff();
 
-            // Step 2: Generate Message (Generic text)
-            progress.report({ message: "Drafting commit message..." });
-            const rawMessage = await generateCommitMessage(gitDiff);
+              if (!gitDiff) {
+                vscode.window.showWarningMessage("No staged or unstaged changes detected.");
+                errorOccurred = true;
+                return;
+              }
 
-            // Step 3: Clean and Copy
-            const finalMessage = cleanAiResponse(rawMessage);
+              // Step 2: Generate Message (Generic text)
+              progress.report({ message: "Drafting commit message..." });
+              const rawMessage = await generateCommitMessage(gitDiff);
 
-            const config = vscode.workspace.getConfiguration("commitMessageGenerator");
-            if (config.get("autoFill")) {
-              await setCommitMessage(finalMessage);
-              vscode.window.showInformationMessage(
-                "Commit message generated!"
+              // Step 3: Clean
+              finalMessage = cleanAiResponse(rawMessage);
+            } catch (error) {
+              vscode.window.showErrorMessage(
+                "Unable to generate message: " + error.message
               );
-            } else {
-              await vscode.env.clipboard.writeText(finalMessage);
-
-              vscode.window.showInformationMessage(
-                "Commit message generated and copied to clipboard!"
-              );
+              errorOccurred = true;
             }
-          } catch (error) {
-            vscode.window.showErrorMessage(
-              "Unable to generate message: " + error.message
+          }
+        );
+
+        if (errorOccurred || !finalMessage) {
+          break;
+        }
+
+        const config = vscode.workspace.getConfiguration("commitMessageGenerator");
+
+        if (!config.get("crossCheck")) {
+          if (config.get("autoFill")) {
+            await setCommitMessage(finalMessage);
+            vscode.window.showInformationMessage(
+              "Commit message generated!"
+            );
+          } else {
+            await vscode.env.clipboard.writeText(finalMessage);
+
+            vscode.window.showInformationMessage(
+              "Commit message generated and copied to clipboard!"
             );
           }
+          break;
         }
-      );
+
+        // Interactive Menu
+        const selection = await vscode.window.showQuickPick(
+          [
+            { label: "$(check) Accept", description: "Use this message", value: finalMessage },
+            { label: "$(sync) Regenerate", description: "Try again" },
+            { label: "$(copy) Copy", description: "Copy to clipboard", value: finalMessage }
+          ],
+          {
+            placeHolder: finalMessage,
+            ignoreFocusOut: true
+          }
+        );
+
+        if (!selection) {
+          break; // User dismissed menu
+        }
+
+        if (selection.label.includes("Accept")) {
+          await setCommitMessage(finalMessage);
+          break;
+        } else if (selection.label.includes("Copy")) {
+          await vscode.env.clipboard.writeText(finalMessage);
+          vscode.window.showInformationMessage("Copied to clipboard!");
+          break;
+        } else if (selection.label.includes("Regenerate")) {
+          action = "Regenerate";
+        }
+      }
     }
   );
 
@@ -135,12 +179,25 @@ function activate(context) {
     }
   );
 
+  let toggleCrossCheckDisposable = vscode.commands.registerCommand(
+    "extension.toggleCrossCheck",
+    async function () {
+      const config = vscode.workspace.getConfiguration("commitMessageGenerator");
+      const currentValue = config.get("crossCheck");
+      await config.update("crossCheck", !currentValue, vscode.ConfigurationTarget.Global);
+      vscode.window.showInformationMessage(
+        `Commit Cross-Check is now ${!currentValue ? "Enabled" : "Disabled"}`
+      );
+    }
+  );
+
   context.subscriptions.push(disposable);
   context.subscriptions.push(toggleConventionalCommitsDisposable);
   context.subscriptions.push(toggleAutoFillDisposable);
   context.subscriptions.push(setCommitToneDisposable);
   context.subscriptions.push(setCustomPromptDisposable);
   context.subscriptions.push(toggleCustomPromptDisposable);
+  context.subscriptions.push(toggleCrossCheckDisposable);
 }
 exports.activate = activate;
 

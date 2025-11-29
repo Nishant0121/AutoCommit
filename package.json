@@ -17,7 +17,8 @@
     "onCommand:extension.toggleAutoFill",
     "onCommand:extension.setCommitTone",
     "onCommand:extension.setCustomPrompt",
-    "onCommand:extension.toggleCustomPrompt"
+    "onCommand:extension.toggleCustomPrompt",
+    "onCommand:extension.toggleCrossCheck"
   ],
   "main": "./extension.js",
   "contributes": {
@@ -45,6 +46,10 @@
       {
         "command": "extension.toggleCustomPrompt",
         "title": "AutoCommit : Toggle Custom Prompt"
+      },
+      {
+        "command": "extension.toggleCrossCheck",
+        "title": "AutoCommit : Toggle Commit Cross-Check"
       }
     ],
     "configuration": {
@@ -96,6 +101,11 @@
           "type": "string",
           "default": "",
           "description": "Enter a custom system instruction. If this is set, it overrides the 'Tone' setting."
+        },
+        "commitMessageGenerator.crossCheck": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable interactive review menu (Accept/Regenerate) before populating the commit message."
         }
       }
     }
