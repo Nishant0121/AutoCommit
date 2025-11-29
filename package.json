@@ -12,14 +12,24 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.generateCommitMessage"
+    "onCommand:extension.generateCommitMessage",
+    "onCommand:extension.toggleConventionalCommits",
+    "onCommand:extension.toggleAutoFill"
   ],
   "main": "./extension.js",
   "contributes": {
     "commands": [
       {
         "command": "extension.generateCommitMessage",
-        "title": "Generate Git Commit Message "
+        "title": "AutoCommit : Generate Git Commit Message "
+      },
+      {
+        "command": "extension.toggleConventionalCommits",
+        "title": "AutoCommit : Toggle Conventional Commits"
+      },
+      {
+        "command": "extension.toggleAutoFill",
+        "title": "AutoCommit : Toggle Auto Fill Commit Message"
       }
     ],
     "configuration": {
@@ -34,6 +44,11 @@
           "type": "boolean",
           "description": "Automatically populate the Source Control commit message box.",
           "default": true
+        },
+        "commitMessageGenerator.useConventionalCommits": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enforce Conventional Commits format (e.g., feat:, fix:)."
         }
       }
     }

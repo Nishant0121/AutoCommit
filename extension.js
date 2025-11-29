@@ -42,14 +42,16 @@ function activate(context) {
             const config = vscode.workspace.getConfiguration("commitMessageGenerator");
             if (config.get("autoFill")) {
               await setCommitMessage(finalMessage);
+              vscode.window.showInformationMessage(
+                "Commit message generated!"
+              );
+            } else {
+              await vscode.env.clipboard.writeText(finalMessage);
+
+              vscode.window.showInformationMessage(
+                "Commit message generated and copied to clipboard!"
+              );
             }
-
-            await vscode.env.clipboard.writeText(finalMessage);
-
-            vscode.window.showInformationMessage(
-              "Commit message generated!"
-            );
-
           } catch (error) {
             vscode.window.showErrorMessage(
               "Unable to generate message: " + error.message
@@ -60,7 +62,33 @@ function activate(context) {
     }
   );
 
+  let toggleConventionalCommitsDisposable = vscode.commands.registerCommand(
+    "extension.toggleConventionalCommits",
+    async function () {
+      const config = vscode.workspace.getConfiguration("commitMessageGenerator");
+      const currentValue = config.get("useConventionalCommits");
+      await config.update("useConventionalCommits", !currentValue, vscode.ConfigurationTarget.Global);
+      vscode.window.showInformationMessage(
+        `Conventional Commits are now ${!currentValue ? "Enabled" : "Disabled"}`
+      );
+    }
+  );
+
+  let toggleAutoFillDisposable = vscode.commands.registerCommand(
+    "extension.toggleAutoFill",
+    async function () {
+      const config = vscode.workspace.getConfiguration("commitMessageGenerator");
+      const currentValue = config.get("autoFill");
+      await config.update("autoFill", !currentValue, vscode.ConfigurationTarget.Global);
+      vscode.window.showInformationMessage(
+        `Auto Fill Commit Message is now ${!currentValue ? "Enabled" : "Disabled"}`
+      );
+    }
+  );
+
   context.subscriptions.push(disposable);
+  context.subscriptions.push(toggleConventionalCommitsDisposable);
+  context.subscriptions.push(toggleAutoFillDisposable);
 }
 exports.activate = activate;
 

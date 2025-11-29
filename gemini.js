@@ -36,7 +36,15 @@ async function getApiKey() {
 async function generateCommitMessage(diffText) {
   const apiKey = await getApiKey();
 
-  const prompt = `Generate a concise git commit message for the following code diff:\n${diffText}`;
+  const config = vscode.workspace.getConfiguration("commitMessageGenerator");
+  const useConventional = config.get("useConventionalCommits");
+
+  let instruction = "Generate a concise git commit message.";
+  if (useConventional) {
+    instruction += " Use the Conventional Commits format (e.g., feat:, fix:, chore:, docs:).";
+  }
+
+  const prompt = `${instruction}\n${diffText}`;
 
   const response = await axios.post(
     GEMINI_URL,
