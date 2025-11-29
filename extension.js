@@ -1,4 +1,4 @@
-const { generateCommitMessage } = require("./gemini");
+const { generateCommitMessage, tonePrompts } = require("./gemini");
 const vscode = require("vscode");
 
 function cleanAiResponse(text) {
@@ -86,9 +86,61 @@ function activate(context) {
     }
   );
 
+  let setCommitToneDisposable = vscode.commands.registerCommand(
+    "extension.setCommitTone",
+    async function () {
+      const tones = ["Professional", ...Object.keys(tonePrompts)];
+      const selectedTone = await vscode.window.showQuickPick(tones, {
+        placeHolder: "Select a personality for your commit messages",
+      });
+
+      if (selectedTone) {
+        await vscode.workspace
+          .getConfiguration("commitMessageGenerator")
+          .update("tone", selectedTone, vscode.ConfigurationTarget.Global);
+        vscode.window.showInformationMessage(`Commit Tone set to: ${selectedTone}`);
+      }
+    }
+  );
+
+  let setCustomPromptDisposable = vscode.commands.registerCommand(
+    "extension.setCustomPrompt",
+    async function () {
+      const config = vscode.workspace.getConfiguration("commitMessageGenerator");
+      const currentPrompt = config.get("customPrompt");
+
+      const input = await vscode.window.showInputBox({
+        prompt: "Enter your custom system instruction for generating commit messages.",
+        value: currentPrompt,
+        placeHolder: "e.g., Generate detailed messages with bullet points.",
+        ignoreFocusOut: true
+      });
+
+      if (input !== undefined) {
+        await config.update("customPrompt", input, vscode.ConfigurationTarget.Global);
+        vscode.window.showInformationMessage(`Custom Prompt updated.`);
+      }
+    }
+  );
+
+  let toggleCustomPromptDisposable = vscode.commands.registerCommand(
+    "extension.toggleCustomPrompt",
+    async function () {
+      const config = vscode.workspace.getConfiguration("commitMessageGenerator");
+      const currentValue = config.get("useCustomPrompt");
+      await config.update("useCustomPrompt", !currentValue, vscode.ConfigurationTarget.Global);
+      vscode.window.showInformationMessage(
+        `Custom Prompt is now ${!currentValue ? "Enabled" : "Disabled"}`
+      );
+    }
+  );
+
   context.subscriptions.push(disposable);
   context.subscriptions.push(toggleConventionalCommitsDisposable);
   context.subscriptions.push(toggleAutoFillDisposable);
+  context.subscriptions.push(setCommitToneDisposable);
+  context.subscriptions.push(setCustomPromptDisposable);
+  context.subscriptions.push(toggleCustomPromptDisposable);
 }
 exports.activate = activate;
 
@@ -106,10 +158,10 @@ async function getGitDiff() {
   try {
     await exec("git rev-parse --is-inside-work-tree", EXEC_OPTIONS);
 
-    let { stdout } = await exec("git diff --cached", EXEC_OPTIONS);
+    let { stdout } = await exec("git diff --cached -- \":(exclude)package-lock.json\"", EXEC_OPTIONS);
 
     if (!stdout.trim()) {
-      ({ stdout } = await exec("git diff", EXEC_OPTIONS));
+      ({ stdout } = await exec("git diff -- \":(exclude)package-lock.json\"", EXEC_OPTIONS));
     }
 
     const diff = stdout.trim();
@@ -125,7 +177,8 @@ async function getGitDiff() {
 
     return diff;
   } catch (error) {
-    throw new Error("Not inside a Git repository.");
+    console.log(error)
+    throw new Error("Not inside a Git repository.", error);
   }
 }
 
