@@ -2,7 +2,7 @@
   "name": "autocommit-np",
   "displayName": "AutoCommit by NP",
   "description": "Generates Git commit messages using AI ",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "icon": "images/icon.png",
   "publisher": "nishant0121",
   "engines": {
