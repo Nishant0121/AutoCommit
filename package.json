@@ -14,7 +14,10 @@
   "activationEvents": [
     "onCommand:extension.generateCommitMessage",
     "onCommand:extension.toggleConventionalCommits",
-    "onCommand:extension.toggleAutoFill"
+    "onCommand:extension.toggleAutoFill",
+    "onCommand:extension.setCommitTone",
+    "onCommand:extension.setCustomPrompt",
+    "onCommand:extension.toggleCustomPrompt"
   ],
   "main": "./extension.js",
   "contributes": {
@@ -30,6 +33,18 @@
       {
         "command": "extension.toggleAutoFill",
         "title": "AutoCommit : Toggle Auto Fill Commit Message"
+      },
+      {
+        "command": "extension.setCommitTone",
+        "title": "AutoCommit : Set Commit Tone"
+      },
+      {
+        "command": "extension.setCustomPrompt",
+        "title": "AutoCommit : Set Custom Prompt"
+      },
+      {
+        "command": "extension.toggleCustomPrompt",
+        "title": "AutoCommit : Toggle Custom Prompt"
       }
     ],
     "configuration": {
@@ -49,6 +64,38 @@
           "type": "boolean",
           "default": false,
           "description": "Enforce Conventional Commits format (e.g., feat:, fix:)."
+        },
+        "commitMessageGenerator.tone": {
+          "type": "string",
+          "default": "Professional",
+          "description": "Select the personality or style of the generated commit message.",
+          "enum": [
+            "Professional",
+            "Bollywood Drama",
+            "Star Wars",
+            "Film Noir",
+            "Marvel",
+            "The Godfather",
+            "Anime Shonen",
+            "Anime Tsundere",
+            "Pirate",
+            "Medieval",
+            "Cyberpunk",
+            "Robot",
+            "Shakespearean",
+            "Haiku",
+            "Passive Aggressive"
+          ]
+        },
+        "commitMessageGenerator.useCustomPrompt": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable the use of a custom prompt, overriding other tone settings."
+        },
+        "commitMessageGenerator.customPrompt": {
+          "type": "string",
+          "default": "",
+          "description": "Enter a custom system instruction. If this is set, it overrides the 'Tone' setting."
         }
       }
     }
