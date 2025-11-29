@@ -29,6 +29,11 @@
           "type": "string",
           "description": "Your Gemini API key for generating commit messages.",
           "default": ""
+        },
+        "commitMessageGenerator.autoFill": {
+          "type": "boolean",
+          "description": "Automatically populate the Source Control commit message box.",
+          "default": true
         }
       }
     }
