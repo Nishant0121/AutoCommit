@@ -39,10 +39,15 @@ function activate(context) {
             // Step 3: Clean and Copy
             const finalMessage = cleanAiResponse(rawMessage);
 
+            const config = vscode.workspace.getConfiguration("commitMessageGenerator");
+            if (config.get("autoFill")) {
+              await setCommitMessage(finalMessage);
+            }
+
             await vscode.env.clipboard.writeText(finalMessage);
 
             vscode.window.showInformationMessage(
-              "Commit message copied to clipboard!"
+              "Commit message generated!"
             );
 
           } catch (error) {
@@ -93,5 +98,16 @@ async function getGitDiff() {
     return diff;
   } catch (error) {
     throw new Error("Not inside a Git repository.");
+  }
+}
+
+async function setCommitMessage(message) {
+  const gitExtension = vscode.extensions.getExtension('vscode.git');
+  if (gitExtension) {
+    const git = gitExtension.exports.getAPI(1);
+    const repo = git.repositories[0]; // Get the first open repository
+    if (repo) {
+      repo.inputBox.value = message; // Populates the box
+    }
   }
 }
