@@ -1,50 +1,72 @@
-# AutoCommit Message Generator
+# AutoCommit - AI-Powered Commit Message Generator
 
-![AutoCommit Logo](https://res.cloudinary.com/dvmsssno2/image/upload/v1763905225/AutoCommit_Logo_ghvuj7.png)
+**AutoCommit** is a VS Code extension that uses **Gemini 2.0 Flash** to analyze your git changes and generate intelligent, context-aware commit messages instantly. It streamlines your workflow by writing clear, meaningful commit messages for you.
 
-A VS Code extension that generates concise, intelligent git commit messages based on your staged or working file changes using Google's **Gemini 2.0 Flash** AI.
+## 🚀 Features
 
-## Features
+* **Context-Aware Analysis:** Reads your staged (and unstaged) `git diff` to understand exactly what changed.
+* **Secure API Key Storage:** Your Gemini API key is stored safely in your local configuration.
+* **Interactive Review:** Review, regenerate, or edit the message before committing (toggleable).
+* **Multiple Personalities:** Choose from various "Tones" to spice up your commit logs.
+* **Conventional Commits:** Optional support for standard conventional commit formats (e.g., `feat:`, `fix:`).
 
-* **Smart Analysis:** Analyzes your current `git diff` to understand context.
-* **Priority Handling:** Prioritizes **staged** changes. If nothing is staged, it falls back to **unstaged** changes.
-* **Gemini 2.0 Powered:** Utilizes the speed of the Gemini 2.0 Flash model for near-instant results.
-* **Clipboard Ready:** Automatically cleans up markdown formatting and copies the message to your clipboard.
-* **Secure Configuration:** Prompts for your API key once and saves it securely in your VS Code Global Settings.
+## 🛠️ Configuration Settings
 
-## Getting Started
+You can customize AutoCommit in VS Code Settings (`Ctrl+,` or `Cmd+,`):
 
-To use this extension, you need a free Google Gemini API Key.
+| Setting | Default | Description |
+| :--- | :--- | :--- |
+| `commitMessageGenerator.apiKey` | (Empty) | Your Gemini API key. You will be prompted to enter this on first use. |
+| `commitMessageGenerator.crossCheck` | `true` | Enables the **Interactive Menu** (Accept / Regenerate / Copy) before finalizing the message. |
+| `commitMessageGenerator.autoFill` | `true` | If `crossCheck` is disabled (or after accepting), automatically populates the Source Control input box. |
+| `commitMessageGenerator.useConventionalCommits` | `false` | Enforces the [Conventional Commits](https://www.conventionalcommits.org/) standard. |
+| `commitMessageGenerator.tone` | `Professional` | Sets the personality of the AI (see Tones below). |
+| `commitMessageGenerator.useCustomPrompt` | `false` | Enable to use your own custom system instruction. |
+| `commitMessageGenerator.customPrompt` | (Empty) | Your custom instruction text (overrides Tone). |
 
-1. Go to [Google AI Studio](https://aistudio.google.com/app/apikey).
-2. Create a new API Key.
-3. Run the extension command (see Usage below). You will be prompted to enter this key the first time you run it.
+## 🎭 Commit Tones
 
-## Usage
+Why be boring? Switch up the style of your commit messages with these built-in modes:
 
-1. Make changes to your code.
-2. (Optional) Stage the files you want to commit (`git add .`).
-3. Open the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P` on Mac).
-4. Type and select: **`Generate Commit Message`**.
-5. The extension will generate a message and copy it to your clipboard.
-6. Paste it into your Git commit box!
+* **Professional:** (Default) Clean, concise, and business-like.
+* **Bollywood Drama:** Over-the-top dialogue style.
+* **Star Wars:** Jedi wisdom or Sith absolutes.
+* **Film Noir:** Gritty detective narration.
+* **Marvel:** Heroic one-liners.
+* **The Godfather:** Respectful mafia boss style.
+* **Anime Shonen:** High energy and power of friendship.
+* **Anime Tsundere:** Cold at first, but helpful.
+* **Pirate:** Nautical slang and aggression.
+* **Medieval:** Old English chivalry.
+* **Cyberpunk:** Technobabble and neon-noir slang.
+* **Robot:** Cold, logical, and emotionless.
+* **Shakespearean:** Iambic pentameter.
+* **Haiku:** Strictly 5-7-5 syllables.
+* **Passive Aggressive:** implies the previous code was bad.
 
-## Extension Settings
+## 🕹️ Commands
 
-This extension contributes the following settings:
+Access these from the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P`):
 
-* `commitMessageGenerator.apiKey`: Your Google Gemini API Key.
-  * *Note: This is usually set automatically via the input box upon first use, but you can modify it manually in your User Settings if needed.*
+* `AutoCommit : Generate Git Commit Message` - Triggers the generation process.
+* `AutoCommit : Toggle Commit Cross-Check` - Turn the interactive review menu on/off.
+* `AutoCommit : Toggle Conventional Commits` - Switch between standard and conventional formats.
+* `AutoCommit : Set Commit Tone` - Select a new personality from the list.
+* `AutoCommit : Toggle Auto Fill Commit Message` - Enable/Disable auto-filling the git input box.
+* `AutoCommit : Set Custom Prompt` - Enter a custom instruction for the AI.
+* `AutoCommit : Toggle Custom Prompt` - Enable/Disable the custom prompt.
 
-## Requirements
+## 📝 How to Use
 
-* **Git**: Must be installed and available in your system PATH.
-* **Repository**: You must be opening a folder that is initialized as a Git repository.
-
-## Known Issues
-
-* Very large diffs might exceed the token limit for the AI model (though unlikely with typical commits).
+1. **Stage your changes** in VS Code (or via terminal).
+2. Open the Command Palette and run **`AutoCommit : Generate Git Commit Message`**.
+3. (If first run) Enter your Gemini API Key.
+4. **Interactive Mode (Default):** A menu will appear at the top:
+    * **Accept:** Populates the commit box.
+    * **Regenerate:** Tries again for a different result.
+    * **Copy:** Copies the text to your clipboard.
+5. **Commit!**
 
 ---
-
-**Made with ❤️ by Nishant Patil**
+**Publisher:** Nishant0121
+**License:** MIT
