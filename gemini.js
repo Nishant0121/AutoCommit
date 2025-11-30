@@ -59,19 +59,36 @@ async function generateCommitMessage(diffText) {
   const useCustomPrompt = config.get("useCustomPrompt");
   const customPrompt = config.get("customPrompt");
 
-  let instruction = "Generate a concise git commit message.";
+  // 1. Base instruction based on Tone/Custom settings
+  let styleInstruction = "Generate a concise git commit message.";
 
   if (useCustomPrompt && customPrompt) {
-    instruction = customPrompt;
+    styleInstruction = customPrompt;
   } else if (tone !== "Professional" && tonePrompts[tone]) {
-    instruction = tonePrompts[tone];
+    styleInstruction = tonePrompts[tone];
   }
+
+  // 2. Define the STRICT structure
+  // We explicitly tell the AI to use the format: Subject -> "This commit:" -> Bullets
+  let formatInstruction = `
+    Strictly output the result in the following format :
+
+    <Type>: <Subject>
+    This commit:
+    * <Detail about change 1>
+    * <Detail about change 2>
+    * <Detail about change 3>
+  `;
 
   if (useConventional) {
-    instruction += " Use the Conventional Commits format (e.g., feat:, fix:, chore:, docs:).";
+    formatInstruction += " Ensure the <Type> follows Conventional Commits (feat, fix, chore, docs, etc.).";
   }
 
-  const prompt = `${instruction}\n${diffText}`;
+  // 3. specific constraint to ensure the description lines (bullets) are generated
+  const constraints = "Ensure the bullet points explain 'what' and 'why' based on the diff provided. Do not include conversational filler.";
+
+  // Combine instructions
+  const prompt = `${styleInstruction}\n${formatInstruction}\n${constraints}\n\nDiff:\n${diffText}`;
 
   const response = await axios.post(
     GEMINI_URL,
@@ -83,7 +100,9 @@ async function generateCommitMessage(diffText) {
     }
   );
 
-  return response.data.candidates[0].content.parts[0].text;
+  // Clean up any potential markdown code blocks (```) if the AI slips up
+  let rawText = response.data.candidates[0].content.parts[0].text;
+  return rawText.replace(/^```(git-commit|text)?\n/, '').replace(/\n```$/, '');
 }
 
 module.exports = { generateCommitMessage, tonePrompts };
