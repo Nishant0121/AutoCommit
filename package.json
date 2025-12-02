@@ -11,6 +11,7 @@
   "categories": [
     "Other"
   ],
+  "type": "module",
   "activationEvents": [
     "onCommand:extension.generateCommitMessage",
     "onCommand:extension.toggleConventionalCommits",

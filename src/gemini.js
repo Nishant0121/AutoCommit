@@ -1,10 +1,10 @@
-const axios = require("axios");
-const vscode = require("vscode");
+import axios from "axios";
+import * as vscode from "vscode";
 
 const GEMINI_URL =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
 
-const tonePrompts = {
+export const tonePrompts = {
   "Bollywood Drama": "Write the commit message in the style of an over-the-top Bollywood movie dialogue.",
   "Star Wars": "Write the commit message using Jedi wisdom, Sith absolutes, or Droid speak.",
   "Film Noir": "Write the commit message in the style of a gritty, cynical detective narrating a rainy night.",
@@ -50,7 +50,7 @@ async function getApiKey() {
   return apiKey;
 }
 
-async function generateCommitMessage(diffText) {
+export async function generateCommitMessage(diffText) {
   const apiKey = await getApiKey();
 
   const config = vscode.workspace.getConfiguration("commitMessageGenerator");
@@ -71,7 +71,7 @@ async function generateCommitMessage(diffText) {
   // 2. Define the STRICT structure
   // We explicitly tell the AI to use the format: Subject -> "This commit:" -> Bullets
   let formatInstruction = `
-    Strictly output the result in the following format :
+    Strictly output the result in the following format : 
 
     <Type>: <Subject>
     This commit:
@@ -104,5 +104,3 @@ async function generateCommitMessage(diffText) {
   let rawText = response.data.candidates[0].content.parts[0].text;
   return rawText.replace(/^```(git-commit|text)?\n/, '').replace(/\n```$/, '');
 }
-
-module.exports = { generateCommitMessage, tonePrompts };
