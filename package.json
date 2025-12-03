@@ -11,7 +11,9 @@
   "categories": [
     "Other"
   ],
+  "type": "module",
   "activationEvents": [
+    "onView:autocommit.sidebar",
     "onCommand:extension.generateCommitMessage",
     "onCommand:extension.toggleConventionalCommits",
     "onCommand:extension.toggleAutoFill",
@@ -22,10 +24,28 @@
   ],
   "main": "./extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "autocommit-view-container",
+          "title": "AutoCommit",
+          "icon": "images/autocommit_icon.png"
+        }
+      ]
+    },
+    "views": {
+      "autocommit-view-container": [
+        {
+          "id": "autocommit.sidebar",
+          "name": "Actions"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "extension.generateCommitMessage",
-        "title": "AutoCommit : Generate Git Commit Message "
+        "title": "AutoCommit : Generate Git Commit Message ",
+        "icon": "$(wand)"
       },
       {
         "command": "extension.toggleConventionalCommits",
@@ -68,7 +88,7 @@
         "commitMessageGenerator.useConventionalCommits": {
           "type": "boolean",
           "default": false,
-          "description": "Enforce Conventional Commits format (e.g., feat:, fix:)."
+          "description": "Enforce Conventional Commits format (e.g., feat:, fix:, chore:, docs:, etc.)."
         },
         "commitMessageGenerator.tone": {
           "type": "string",
@@ -108,6 +128,15 @@
           "description": "Enable interactive review menu (Accept/Regenerate) before populating the commit message."
         }
       }
+    },
+    "menus": {
+      "scm/title": [
+        {
+          "command": "extension.generateCommitMessage",
+          "group": "navigation",
+          "when": "scmProvider == git"
+        }
+      ]
     }
   },
   "scripts": {
