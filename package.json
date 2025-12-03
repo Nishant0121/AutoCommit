@@ -37,7 +37,7 @@
       "autocommit-view-container": [
         {
           "id": "autocommit.sidebar",
-          "name": "AutoCommit Actions"
+          "name": "Actions"
         }
       ]
     },
