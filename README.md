@@ -2,15 +2,16 @@
 
 **AutoCommit** is a VS Code extension that uses **Gemini 2.0 Flash** to analyze your git changes and generate intelligent, context-aware commit messages instantly. It streamlines your workflow by writing clear, meaningful commit messages for you.
 
-## 🚀 Features
+## Features
 
+* **Inline Code Editor:** Refactor, fix, or modify code directly in the editor with AI instructions and instant diff visualization.
 * **Context-Aware Analysis:** Reads your staged (and unstaged) `git diff` to understand exactly what changed.
 * **Secure API Key Storage:** Your Gemini API key is stored safely in your local configuration.
 * **Interactive Review:** Review, regenerate, or edit the message before committing (toggleable).
 * **Multiple Personalities:** Choose from various "Tones" to spice up your commit logs.
 * **Conventional Commits:** Optional support for standard conventional commit formats (e.g., `feat:`, `fix:`).
 
-## 🛠️ Configuration Settings
+## Configuration Settings
 
 You can customize AutoCommit in VS Code Settings (`Ctrl+,` or `Cmd+,`):
 
@@ -24,7 +25,7 @@ You can customize AutoCommit in VS Code Settings (`Ctrl+,` or `Cmd+,`):
 | `commitMessageGenerator.useCustomPrompt` | `false` | Enable to use your own custom system instruction. |
 | `commitMessageGenerator.customPrompt` | (Empty) | Your custom instruction text (overrides Tone). |
 
-## 🎭 Commit Tones
+## Commit Tones
 
 Why be boring? Switch up the style of your commit messages with these built-in modes:
 
@@ -44,11 +45,12 @@ Why be boring? Switch up the style of your commit messages with these built-in m
 * **Haiku:** Strictly 5-7-5 syllables.
 * **Passive Aggressive:** implies the previous code was bad.
 
-## 🕹️ Commands
+## Commands
 
 Access these from the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P`):
 
-* `AutoCommit : Generate Git Commit Message` - Triggers the generation process.
+* `AutoCommit : Generate Git Commit Message` - Triggers the generation process (`Ctrl+Alt+C`).
+* `AutoCommit : Inline Code Edit` - Modify selected code using AI instructions (`Ctrl+Alt+K`).
 * `AutoCommit : Toggle Commit Cross-Check` - Turn the interactive review menu on/off.
 * `AutoCommit : Toggle Conventional Commits` - Switch between standard and conventional formats.
 * `AutoCommit : Set Commit Tone` - Select a new personality from the list.
@@ -56,7 +58,19 @@ Access these from the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P`):
 * `AutoCommit : Set Custom Prompt` - Enter a custom instruction for the AI.
 * `AutoCommit : Toggle Custom Prompt` - Enable/Disable the custom prompt.
 
-## 📝 How to Use
+## Inline Code Editor
+
+AutoCommit isn't just for messages anymore. You can now use Gemini to edit your code!
+
+1. **Select** a block of code in your editor.
+2. Press `Ctrl+Alt+K` (or `Cmd+Alt+K` on Mac).
+3. **Type your instruction** (e.g., "Refactor to async/await", "Add error handling").
+4. **Review:**
+    * The **Old Code** will be shown in **Red** (strikethrough).
+    * The **New Code** will be shown in **Green**.
+    * Click **Accept Change** or **Reject Change** (CodeLens) appearing above the text.
+
+## How to Use
 
 1. **Stage your changes** in VS Code (or via terminal).
 2. Open the Command Palette and run **`AutoCommit : Generate Git Commit Message`**.

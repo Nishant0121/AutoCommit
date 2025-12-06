@@ -4,6 +4,17 @@ All notable changes to the "autocommit" extension will be documented in this fil
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [1.2.0] - 2025-12-06
+
+### Added
+
+- **Inline Code Edit:** Transform selected code using natural language instructions via Gemini 2.0 Flash.
+- **Optimistic UI:** Visual "Red vs Green" diff view for reviewing AI code changes inline.
+- **CodeLens Controls:** Interactive "Accept Change" and "Reject Change" buttons directly in the editor.
+- **New Keybindings:**
+  - `Ctrl+Alt+K`: Trigger Inline Edit.
+  - `Ctrl+Alt+C`: Trigger Commit Message Generation.
+
 ## [1.1.0] - 2025-12-03
 
 ### New Features
