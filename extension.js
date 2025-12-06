@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { SidebarProvider } from "./src/sidebarProvider.js";
+import { sidebarProvider } from "./src/sidebarProvider.js";
 import { handleInlineCodeEdit } from "./src/inlineEdit.js";
 import { inlineEditCodeLensProvider } from "./src/codeLensProvider.js";
 import { inlineEditState } from "./src/inlineEditState.js";
@@ -14,7 +14,6 @@ import {
 } from "./src/commands.js";
 
 export function activate(context) {
-  const sidebarProvider = new SidebarProvider();
   vscode.window.registerTreeDataProvider("autocommit.sidebar", sidebarProvider);
 
   // Register CodeLens Provider for all languages

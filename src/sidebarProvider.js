@@ -1,18 +1,28 @@
 import * as vscode from "vscode";
 
-export class SidebarProvider {
-  constructor() {
-    this._onDidChangeTreeData = new vscode.EventEmitter();
-    this.onDidChangeTreeData = this._onDidChangeTreeData.event;
-  }
+const _onDidChangeTreeData = new vscode.EventEmitter();
+
+function createSidebarItem(label, commandId, iconName, description = "") {
+  const item = new vscode.TreeItem(label, vscode.TreeItemCollapsibleState.None);
+  item.command = {
+    command: commandId,
+    title: label
+  };
+  item.iconPath = new vscode.ThemeIcon(iconName);
+  item.description = description;
+  return item;
+}
+
+export const sidebarProvider = {
+  onDidChangeTreeData: _onDidChangeTreeData.event,
 
   refresh() {
-    this._onDidChangeTreeData.fire();
-  }
+    _onDidChangeTreeData.fire();
+  },
 
   getTreeItem(element) {
     return element;
-  }
+  },
 
   getChildren() {
     const config = vscode.workspace.getConfiguration("commitMessageGenerator");
@@ -25,37 +35,37 @@ export class SidebarProvider {
     const customPromptText = config.get("customPrompt");
 
     return [
-      new SidebarItem(
+      createSidebarItem(
         "Generate Commit Message",
         "extension.generateCommitMessage",
         "sparkle",
         "AI Powered"
       ),
-      new SidebarItem(
+      createSidebarItem(
         "Set Tone",
         "extension.setCommitTone",
         "color-mode",
         useCustomPrompt ? "Ignored (Custom Prompt Active)" : `Current: ${tone}`
       ),
-      new SidebarItem(
+      createSidebarItem(
         "Set Custom Prompt",
         "extension.setCustomPrompt",
         "edit",
         useCustomPrompt ? "Active" : (customPromptText ? "Configured (Inactive)" : "Not configured")
       ),
-      new SidebarItem(
+      createSidebarItem(
         "Conventional Commits",
         "extension.toggleConventionalCommits",
         useConventional ? "check" : "circle-outline",
         useConventional ? "Enabled" : "Disabled"
       ),
-      new SidebarItem(
+      createSidebarItem(
         "Auto Fill",
         "extension.toggleAutoFill",
         autoFill ? "check" : "circle-outline",
         autoFill ? "Enabled" : "Disabled"
       ),
-      new SidebarItem(
+      createSidebarItem(
         "Cross-Check",
         "extension.toggleCrossCheck",
         crossCheck ? "check" : "circle-outline",
@@ -63,16 +73,4 @@ export class SidebarProvider {
       )
     ];
   }
-}
-
-class SidebarItem extends vscode.TreeItem {
-  constructor(label, commandId, iconName, description = "") {
-    super(label, vscode.TreeItemCollapsibleState.None);
-    this.command = {
-      command: commandId,
-      title: label
-    };
-    this.iconPath = new vscode.ThemeIcon(iconName);
-    this.description = description;
-  }
-}
+};
