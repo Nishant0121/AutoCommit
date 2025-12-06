@@ -20,7 +20,8 @@
     "onCommand:extension.setCommitTone",
     "onCommand:extension.setCustomPrompt",
     "onCommand:extension.toggleCustomPrompt",
-    "onCommand:extension.toggleCrossCheck"
+    "onCommand:extension.toggleCrossCheck",
+    "onCommand:extension.inlineCodeEdit"
   ],
   "main": "./extension.js",
   "contributes": {
@@ -70,6 +71,24 @@
       {
         "command": "extension.toggleCrossCheck",
         "title": "AutoCommit : Toggle Commit Cross-Check"
+      },
+      {
+        "command": "extension.inlineCodeEdit",
+        "title": "AutoCommit : Inline Code Edit",
+        "icon": "$(edit)"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "extension.inlineCodeEdit",
+        "key": "ctrl+alt+k",
+        "mac": "cmd+alt+k",
+        "when": "editorHasSelection"
+      },
+      {
+        "command": "extension.generateCommitMessage",
+        "key": "ctrl+alt+c",
+        "mac": "cmd+alt+c"
       }
     ],
     "configuration": {
