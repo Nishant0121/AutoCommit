@@ -36,9 +36,15 @@ export async function generateCommitMessageHandler() {
           // Step 3: Clean
           finalMessage = cleanAiResponse(rawMessage);
         } catch (error) {
-          vscode.window.showErrorMessage(
-            "Unable to generate message: " + error.message
-          );
+          if (error.response && error.response.status === 429) {
+            vscode.window.showErrorMessage(
+              "Gemini API rate limit exceeded. Please wait a moment and try again."
+            );
+          } else {
+            vscode.window.showErrorMessage(
+              "Unable to generate message: " + error.message
+            );
+          }
           errorOccurred = true;
         }
       }

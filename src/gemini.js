@@ -2,7 +2,7 @@ import axios from "axios";
 import * as vscode from "vscode";
 
 const GEMINI_URL =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
 export const tonePrompts = {
   "Bollywood Drama": "Write the commit message in the style of an over-the-top Bollywood movie dialogue.",
