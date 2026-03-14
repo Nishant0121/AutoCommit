@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { generateCommitMessage, tonePrompts } from "./gemini.js";
 import { getGitDiff, setCommitMessage } from "./git.js";
-import { cleanAiResponse } from "./utils.js";
+import { cleanAiResponse, generateRuleBasedCommitMessage } from "./utils.js";
 
 export async function generateCommitMessageHandler() {
   let action = "Regenerate";
@@ -18,10 +18,11 @@ export async function generateCommitMessageHandler() {
         cancellable: false,
       },
       async (progress) => {
+        let gitDiff;
         try {
           // Step 1: Scan for changes
           progress.report({ message: "Scanning workspace changes..." });
-          const gitDiff = await getGitDiff();
+          gitDiff = await getGitDiff();
 
           if (!gitDiff) {
             vscode.window.showWarningMessage("No staged or unstaged changes detected.");
@@ -36,16 +37,21 @@ export async function generateCommitMessageHandler() {
           // Step 3: Clean
           finalMessage = cleanAiResponse(rawMessage);
         } catch (error) {
-          if (error.response && error.response.status === 429) {
-            vscode.window.showErrorMessage(
-              "Gemini API rate limit exceeded. Please wait a moment and try again."
+          console.error("AI Generation Error:", error);
+          
+          if (gitDiff) {
+            // Fallback to rule-based analysis
+            progress.report({ message: "AI Offline: Using rule-based analysis..." });
+            finalMessage = generateRuleBasedCommitMessage(gitDiff);
+            vscode.window.showInformationMessage(
+              "Using local rule-based analysis (AI offline)."
             );
           } else {
             vscode.window.showErrorMessage(
               "Unable to generate message: " + error.message
             );
+            errorOccurred = true;
           }
-          errorOccurred = true;
         }
       }
     );
